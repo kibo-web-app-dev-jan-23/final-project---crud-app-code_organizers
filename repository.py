@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete, create_engine
+from sqlalchemy import select, delete, create_engine, inspect
 from sqlalchemy.orm import sessionmaker
 from models import *
 
@@ -9,9 +9,11 @@ class TaskManagerDB:
         self.engine = create_engine(path, echo=logging)
         Session = sessionmaker(self.engine)
         self.session = Session()
+        
 
     def initialize_db_schema(self):
-        Base.metadata.create_all(self.engine)
+        print(Base.metadata.create_all(self.engine))
+        return inspect(self.engine)
         
     def user_exists(self, email) -> bool:
         

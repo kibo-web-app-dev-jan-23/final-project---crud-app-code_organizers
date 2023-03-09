@@ -3,9 +3,9 @@ from repository import TaskManagerDB
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = 'OjosAppDivineTracks'
 
-db = TaskManagerDB()
+db = TaskManagerDB("sqlite:///activities.db", True)
 
 @app.route('/')
 def index():
