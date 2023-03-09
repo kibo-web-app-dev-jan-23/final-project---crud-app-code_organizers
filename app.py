@@ -1,42 +1,94 @@
-from flask import Flask, render_template, request, redirect, session, g
-from flask_sqlalchemy import SQLAlchemy
-from models import db
+from flask import Flask, render_template, redirect, url_for, request, session, flash
 from repository import TaskManagerDB
+from werkzeug.security import check_password_hash, generate_password_hash
 
-# Initialize Flask app and database
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
+app.secret_key = 'your_secret_key_here'
 
-# Automatically create database tables based on models
-task_manager = TaskManagerDB()
+db = TaskManagerDB()
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    if request.method =='POST':
-        email = request.form["email"]
-        password = request.form["password"]
-        
-        if task_manager.user_exists(email, password):
-            session['email'] = email
-            return redirect('/dashboard')
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = db.find_user_by_email(email)
+        if db.user_exists(email) and check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            return redirect(url_for('dashboard'))
         else:
-            error = "Invalid username or password. Please try again."
-            return render_template("index.html", message= error)
-    return render_template("index.html")
+            flash('Invalid email or password', 'error')
+            return redirect(url_for('login'))
+    else:
+        return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        task_manager.add_user(request.form["name"], request.form["email"], request.form["password"])
-        return redirect('/')
-    return render_template("signup.html")
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        if db.user_exists(email):
+            flash('This email is already linked to an account', 'error')
+            return redirect(url_for('signup'))
+        else:
+            hashed_password = generate_password_hash(password)
+            db.add_user(name, email, hashed_password)
+            flash('Account created successfully!', 'success')
+            return redirect(url_for('login'))
+    else:
+        return render_template('signup.html')
 
-@app.get('/dashboard')
-def show_tasks():
-    return render_template("dashboard.html")
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        user = db.get_user(user_id)
+        tasks = db.find_tasks_by_user_id(user_id)
+        return render_template('dashboard.html', user=user, tasks=tasks)
+    else:
+        return redirect(url_for('login'))
 
+@app.route('/tasks/<int:task_id>', methods=['PUT','GET', 'DELETE'])
+def view_task(task_id):
+    if request.method == 'PUT':    
+        data = request.get_json()
+        new_title = data['title']
+        new_description = data['description']
+        new_status = data['status']
+        db.update_task(task_id, new_title, new_description, new_status)
+        return redirect(url_for('dashboard'))
+    task = db.get_task(task_id)
+    return render_template('task.html', task )    
+    
+
+
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    db.remove_task(task_id)
+    message = {"message": "Task deleted successfully"}, 201
+    return redirect(url_for('dashboard'))
+    
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    db.remove_user(user_id)
+    return redirect(url_for('signup'))
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
 
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    db.initialize_db_schema()
+    app.run(debug=True)

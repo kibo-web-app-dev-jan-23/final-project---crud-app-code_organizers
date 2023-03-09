@@ -1,7 +1,6 @@
 from sqlalchemy import select, delete, create_engine
-from sqlalchemy.orm import sessionmaker, query
-from sqlalchemy.exc import IntegrityError
-from models import AppUser, Task, Base
+from sqlalchemy.orm import sessionmaker
+from models import *
 
 
 class TaskManagerDB:
@@ -14,29 +13,43 @@ class TaskManagerDB:
     def initialize_db_schema(self):
         Base.metadata.create_all(self.engine)
         
-    def user_exists(self, email: str, password: str) -> bool:
+    def user_exists(self, email) -> bool:
         
-        user = self.session.query(AppUser).filter(AppUser.email == email, AppUser.password == password).first()
+        user = self.session.query(AppUser).filter(AppUser.email == email).first()
         if user:
             return True
         else:
             return False  
     
     def add_user(self, new_user_name, new_user_email, password):
-        self.session.add(AppUser(name=new_user_name, email= new_user_email, password= password ))
-        self.session.commit()
+        try:
+            self.session.add(AppUser(name=new_user_name, email= new_user_email, password=password ))
+            self.session.commit()
+            return "Account created Succesfully"
+        except:
+            return "It seems this email has been used before"
+            
 
     def add_task(self, title, description, user_id):
         self.session.add(Task(title=title, description= description, user_id= user_id ))
         self.session.commit()
     
     
-    def lookup_user(self, user_id_to_lookup):
+    def get_user(self, user_id_to_lookup):
         result = self.session.get(AppUser, user_id_to_lookup)
         if result == None:
             raise Exception(f"User not Found")
         return result
     
+    def get_task(self, task_id_to_lookup):
+        result = self.session.get(Task, task_id_to_lookup)
+        if result == None:
+            raise Exception(f"User not Found")
+        return result
+
+    def find_user_by_email(self, email):
+        user = self.session.query(AppUser).filter_by(email=email).first()
+        return user
     
     def find_tasks_by_user_id(self, user_id):
         tasks = self.session.query(Task).join(AppUser).filter(AppUser.id == user_id).all()
@@ -47,13 +60,14 @@ class TaskManagerDB:
     def update_task(self, task_id, new_title, new_description, new_status):
         task = self.session.get(Task, task_id)
         if task is None:
-            Exception("Task not found")
+            return {"error": "Task not found"}
         task.title = new_title
         task.description = new_description
         task.status = new_status
         self.session.commit()
         self.session.refresh(task)
         return task
+
     
     
     def update_user(self, user_id, new_name):
