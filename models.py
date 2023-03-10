@@ -19,8 +19,6 @@ class AppUser(Base):
     password = Column(String(64))
     tasks = relationship("Task", backref="appuser", lazy=True, cascade="all, delete-orphan" )
 
-    def __str__(self):
-        return f"UserName: {self.name}"
 
 
 class Task(Base):

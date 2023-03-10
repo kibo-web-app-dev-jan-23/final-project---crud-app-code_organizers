@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete, create_engine, inspect
+from sqlalchemy import select, delete, create_engine, inspect, inspect
 from sqlalchemy.orm import sessionmaker
 from models import *
 
@@ -7,13 +7,10 @@ class TaskManagerDB:
     # set logging=True to log all SQL queries
     def __init__(self, path="sqlite:///activities.db", logging=False):
         self.engine = create_engine(path, echo=logging)
-        Session = sessionmaker(self.engine)
+        Session = sessionmaker(bind=self.engine)
+        Base.metadata.create_all(bind=self.engine)
         self.session = Session()
         
-
-    def initialize_db_schema(self):
-        print(Base.metadata.create_all(self.engine))
-        return inspect(self.engine)
         
     def user_exists(self, email) -> bool:
         
@@ -56,7 +53,7 @@ class TaskManagerDB:
     def find_tasks_by_user_id(self, user_id):
         tasks = self.session.query(Task).join(AppUser).filter(AppUser.id == user_id).all()
         if len(tasks) == 0:
-            raise Exception(f"No Tasks Yet.")
+            return "No tasks yet"
         return tasks
     
     def update_task(self, task_id, new_title, new_description, new_status):

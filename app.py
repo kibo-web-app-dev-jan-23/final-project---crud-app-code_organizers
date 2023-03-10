@@ -1,8 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
-from repository import TaskManagerDB
+from repository import *
 from werkzeug.security import check_password_hash, generate_password_hash
 
-app = Flask(__name__)
+app = Flask(__name__, debug=True)
 app.secret_key = 'OjosAppDivineTracks'
 
 db = TaskManagerDB("sqlite:///activities.db", True)
@@ -87,8 +87,6 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
 
-
-
 if __name__ == '__main__':
-    db.initialize_db_schema()
-    app.run(debug=True)
+    app.run()
+
