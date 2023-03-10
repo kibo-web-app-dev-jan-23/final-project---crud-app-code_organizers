@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 from repository import *
 from werkzeug.security import check_password_hash, generate_password_hash
 
-app = Flask(__name__, debug=True)
+app = Flask(__name__)
 app.secret_key = 'OjosAppDivineTracks'
 
 db = TaskManagerDB("sqlite:///activities.db", True)
@@ -88,5 +88,5 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 
