@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete, create_engine, inspect, inspect
+from sqlalchemy import select, delete, create_engine, inspect
 from sqlalchemy.orm import sessionmaker
 from models import *
 
@@ -49,11 +49,11 @@ class TaskManagerDB:
     def find_user_by_email(self, email):
         user = self.session.query(AppUser).filter_by(email=email).first()
         return user
-    
+    # breakpoint() 
     def find_tasks_by_user_id(self, user_id):
         tasks = self.session.query(Task).join(AppUser).filter(AppUser.id == user_id).all()
-        if len(tasks) == 0:
-            return "No tasks yet"
+        # if len(tasks) == 0:
+            
         return tasks
     
     def update_task(self, task_id, new_title, new_description, new_status):

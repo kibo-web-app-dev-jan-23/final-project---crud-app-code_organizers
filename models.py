@@ -1,14 +1,14 @@
-from enum import Enum
+from enum import Enum as Enums
 from sqlalchemy import String, Integer, Column, ForeignKey, DateTime, Enum
 from sqlalchemy.orm import relationship, declarative_base
 from datetime import datetime
 
 Base = declarative_base()
 
-class Status(Enum):
-    PENDING = 'Pending'
-    IN_PROGRESS = 'In progress'
-    DONE = 'Done'
+class Status(Enums):
+    PENDING = 'PENDING'
+    IN_PROGRESS = 'IN_PROGRESS'
+    DONE = 'DONE'
 
 
 class AppUser(Base):
@@ -26,7 +26,7 @@ class Task(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String(50))
     description = Column(String(128))
-    status = Column(Status, default=Status.PENDING, nullable=False)
+    status = Column(Enum(Status), default=Status.PENDING, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
     user_id = Column(Integer, ForeignKey('appuser.id'), nullable=False)

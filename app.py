@@ -51,7 +51,9 @@ def dashboard():
     if 'user_id' in session:
         user_id = session['user_id']
         user = db.get_user(user_id)
+        
         tasks = db.find_tasks_by_user_id(user_id)
+        
         return render_template('dashboard.html', user=user, tasks=tasks)
     else:
         return redirect(url_for('login'))
@@ -66,8 +68,21 @@ def view_task(task_id):
         db.update_task(task_id, new_title, new_description, new_status)
         return redirect(url_for('dashboard'))
     task = db.get_task(task_id)
-    return render_template('task.html', task )    
+    return render_template('task.html', task )   
+ 
+@app.route('/add_task', methods=['POST'])
+def add_task():
+    # get the data from the request
     
+    title = request.form['title']
+    description = request.form['description']
+    user_id = session.get('user_id')
+    print(user_id) 
+    # add the task to the database
+    db.add_task(title, description, user_id)
+    
+    # return a success message
+    return redirect(url_for('dashboard')) 
 
 
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
@@ -76,17 +91,19 @@ def delete_task(task_id):
     message = {"message": "Task deleted successfully"}, 201
     return redirect(url_for('dashboard'))
     
-@app.route('/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
+@app.route('/delete-account', methods=['DELETE'])
+def delete_user():
+    user_id = session.get('user_id')
     db.remove_user(user_id)
-    return redirect(url_for('signup'))
+    session.pop('user_id', None)
+    return render_template('signup.html')
 
 
-@app.route('/logout')
+@app.post('/logout')
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug = True)
 
