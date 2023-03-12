@@ -1,0 +1,66 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+}
+.task-info {
+  font-size: 2vw;
+  text-align: left;
+  margin: 30px;
+  padding: 20px;
+  box-sizing: content-box;
+}
+
+/* Style the buttons and align them vertically */
+.button-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Style the Delete button */
+.delete {
+  background-color: #FF6666;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Style the Mark in-progress button */
+.in-progress {
+  background-color: #FFB266;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Style the Mark as Done button */
+.done {
+  background-color: #66B2FF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Add media queries for responsive design */
+@media only screen and (max-width: 600px) {
+  .button-group {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  /* Reduce padding of buttons for small screens */
+  .delete, .in-progress, .done {
+    padding: 5px 10px;
+  }
+}

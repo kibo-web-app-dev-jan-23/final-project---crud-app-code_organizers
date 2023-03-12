@@ -24,3 +24,13 @@ function deleteAccount() {
     alert("An error occurred in deleting your account.");
   });
 }
+ const button = document.getElementById('toggle-form');
+  const form = document.getElementById('my-form');
+
+  button.addEventListener('click', () => {
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  });
+
+
+
+

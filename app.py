@@ -61,40 +61,42 @@ def dashboard():
 
 @app.route('/tasks/<int:task_id>', methods=['POST','GET'])
 def view_task(task_id):
-    breakpoint()
     if request.method == 'POST':    
-        data = request.get_json()
-        new_title = data['title']
-        new_description = data['description']
-        new_status = data['status']
-        db.update_task(task_id, new_title, new_description, new_status)
+        
+        new_title = request.form['title']
+        new_description = request.form['description']
+        new_status = request.form['status']
         breakpoint()
+        db.update_task(task_id, new_title, new_description, new_status)
+        
         return redirect(url_for('dashboard'))
     else:
         task = db.get_task(task_id)
         return render_template('task_details.html', task=task, Status=Status)
-   
+ 
+@app.route('/change-status/<int:task_id>', methods=['POST'])
+def update_status(task_id):
+    task = db.get_task(task_id)
+    new_status = request.form['status']
+    updated_task = db.update_task(task_id, task.title, task.description, new_status)
+
+    return render_template('task_details.html', task=updated_task, Status=Status)
  
 @app.route('/add_task', methods=['POST'])
-def add_task():
-    # get the data from the request
-    
+def add_task(): 
     title = request.form['title']
     description = request.form['description']
     user_id = session.get('user_id')
-    print(user_id) 
-    # add the task to the database
-    db.add_task(title, description, user_id)
     
-    # return a success message
+    db.add_task(title, description, user_id)
     return redirect(url_for('dashboard')) 
 
 
-@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+@app.route('/delete-task/<int:task_id>', methods=['POST'])
 def delete_task(task_id):
     db.remove_task(task_id)
     message = {"message": f"Task{task_id} deleted successfully"}, 201
-    return message
+    return redirect(url_for("index"))
     
 @app.route('/delete-account', methods=['DELETE'])
 def delete_user():
