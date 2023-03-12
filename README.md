@@ -1,6 +1,6 @@
 # Activity Tracking Aplication
 
-Actilog is a flask application that is built to allow users signup and log their activities. Each user has to register with a unique email after which they can log activities and update them as required.
+This is a flask application that is built to allow users signup and log their activities. Each user has to register with a unique email after which they can log activities and update them as required.
 
 
 ## Set Up

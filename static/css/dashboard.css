@@ -112,7 +112,8 @@ td {
 }
 
 td:first-child {
-  width: 40%;
+  width: 25%;
+  font-size: 1.5vw;
 }
 
 td:last-child {

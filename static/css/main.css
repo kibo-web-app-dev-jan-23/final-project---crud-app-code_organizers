@@ -15,6 +15,9 @@ h1 {
   font-size: 36px;
   text-align: center;
 }
+a {
+  text-align: center;
+}
 
 .task-details {
   margin-top: 30px;
