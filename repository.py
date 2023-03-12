@@ -36,8 +36,8 @@ class TaskManagerDB:
     
     def get_user(self, user_id_to_lookup):
         result = self.session.get(AppUser, user_id_to_lookup)
-        if result == None:
-            raise Exception(f"User not Found")
+        # if result == None:
+        #     raise Exception(f"User not Found")
         return result
     
     def get_task(self, task_id_to_lookup):

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from repository import *
 from werkzeug.security import check_password_hash, generate_password_hash
+from models import Status
 
 app = Flask(__name__)
 app.secret_key = 'OjosAppDivineTracks'
@@ -29,7 +30,7 @@ def login():
     else:
         return render_template('login.html')
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup', methods=['GET', 'POST', 'DELETE'])
 def signup():
     if request.method == 'POST':
         name = request.form['name']
@@ -46,7 +47,7 @@ def signup():
     else:
         return render_template('signup.html')
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['POST','GET', 'DELETE'])
 def dashboard():
     if 'user_id' in session:
         user_id = session['user_id']
@@ -58,17 +59,21 @@ def dashboard():
     else:
         return redirect(url_for('login'))
 
-@app.route('/tasks/<int:task_id>', methods=['PUT','GET', 'DELETE'])
+@app.route('/tasks/<int:task_id>', methods=['POST','GET'])
 def view_task(task_id):
-    if request.method == 'PUT':    
+    breakpoint()
+    if request.method == 'POST':    
         data = request.get_json()
         new_title = data['title']
         new_description = data['description']
         new_status = data['status']
         db.update_task(task_id, new_title, new_description, new_status)
+        breakpoint()
         return redirect(url_for('dashboard'))
-    task = db.get_task(task_id)
-    return render_template('task.html', task )   
+    else:
+        task = db.get_task(task_id)
+        return render_template('task_details.html', task=task, Status=Status)
+   
  
 @app.route('/add_task', methods=['POST'])
 def add_task():
@@ -88,15 +93,15 @@ def add_task():
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
     db.remove_task(task_id)
-    message = {"message": "Task deleted successfully"}, 201
-    return redirect(url_for('dashboard'))
+    message = {"message": f"Task{task_id} deleted successfully"}, 201
+    return message
     
 @app.route('/delete-account', methods=['DELETE'])
 def delete_user():
     user_id = session.get('user_id')
     db.remove_user(user_id)
     session.pop('user_id', None)
-    return render_template('signup.html')
+    return redirect(url_for('signup'))
 
 
 @app.post('/logout')

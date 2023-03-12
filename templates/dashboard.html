@@ -10,10 +10,9 @@
 </head>
 <body>
     <div class="user-profile">
-        <img src="{{ url_for('static', filename='images/profile.svg') }}" alt="User Avatar">
+        <img src="{{ url_for('static', filename='images/user.png') }}" alt="User Avatar">
         
         <h2>{{ user.name }}</h2>
-        <p>{{ user.email }}</p>
         <form method="POST" action="{{ url_for('logout') }}">
             <button type="submit">Logout</button>
         </form>
@@ -36,8 +35,8 @@
         <table>
             <thead>
                 <tr>
-                    <th>Task Name</th>
-                    <th>Description</th>
+                    <th>Task</th>
+                    
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -46,9 +45,10 @@
                 {% for task in tasks %}
                 <tr>
                     <td>{{ task.title }}</td>
-                    <td>{{ task.description }}</td>
-                    <td>{{ task.status }}</td>
-                    <td><a href="{{ url_for('view_task', task_id=task.id) }}">Details</a></td>
+                
+                    <td>{{ task.status.value }}</td>
+                    <td><a href="{{ url_for('view_task', task_id=task.id) }}">View</a></td>
+                    <td><button onclick="deleteTask()" type="button">Delete</button></td>
                 </tr>
                 {% endfor %}
             </tbody>

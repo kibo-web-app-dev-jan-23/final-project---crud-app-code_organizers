@@ -5,6 +5,24 @@ body {
   font-family: Arial, sans-serif;
   background-color: #F4F4F4;
 }
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 36px;
+  text-align: center;
+}
+
+.task-details {
+  margin-top: 30px;
+}
+
+.task-details h2 {
+  font-size: 24px;
+}
 
 /* Style the form container */
 form {

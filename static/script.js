@@ -13,12 +13,14 @@ function deleteAccount() {
     if (response.ok) {
       // If the request is successful, show a success message
       alert("Your account has been deleted.");
+      // Redirect the user to the home page
+      window.location.href = '/';
     } else {
       // If the request fails, show an error message
       alert("An error occurred while deleting your account.");
     }
   }).catch(error => {
     // If the request fails, show an error message
-    alert("An error occurred while deleting your account.");
+    alert("An error occurred in deleting your account.");
   });
 }

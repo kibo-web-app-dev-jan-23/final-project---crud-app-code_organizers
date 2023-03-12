@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	<script src="/static/script.js"></script>
+    <title>Task Details</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Details</h1>
+        <div class="task-details">
+            <h2>{{ task.title }}</h2>
+            <p>{{ task.description }}</p>
+            <p>Status: {{ task.status.value }}</p>
+            <p>Creation date: {{ task.created_at }}</p>
+            <p>Last updated {{ task.updated_at }}</p>
+            <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}" onsubmit="return confirm('Are you sure you want to delete this task?')">
+                <button type="submit">Delete Task</button>
+            </form>
+            <form method="POST" action="{{ url_for('view_task', task_id=task.id) }}">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" value="{{ task.title }}" required>
+                <br>
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" value="{{ task.description }}" required>
+                <br>
+                <label for="status">Status:</label>
+                <select name="status" id="status">
+                    <option value="{{ Status.PENDING }}" {% if task.status == Status.PENDING %}selected{% endif %}>Pending</option>
+                    <option value="{{ Status.IN_PROGRESS }}" {% if task.status == Status.IN_PROGRESS %}selected{% endif %}>In Progress</option>
+                    <option value="{{ Status.DONE }}" {% if task.status == Status.DONE %}selected{% endif %}>Done</option>
+                </select>
+                <br>
+                <button type="submit">Update Task</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -29,5 +29,5 @@ class Task(Base):
     status = Column(Enum(Status), default=Status.PENDING, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-    user_id = Column(Integer, ForeignKey('appuser.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('appuser.id', ondelete='CASCADE'),  nullable=False)
     
