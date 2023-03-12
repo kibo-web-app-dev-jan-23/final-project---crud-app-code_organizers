@@ -1,44 +1,31 @@
-# Multi-model CRUD App
+# Activity Tracking Aplication
 
-Design and build a web application using Flask or Express.
+Actilog is a flask application that is built to allow users signup and log their activities. Each user has to register with a unique email after which they can log activities and update them as required.
 
-## Requirements
 
-Your application
+## Set Up
 
-- must use Flask or Express
-- must use a relational database (Postgresql is recommended, if you would like to deploy your application. SQLite3 is also fine!)
-- must have multiple, related database models
-- must have features to Create, Read, Update, and Delete some of those models from a web interface
-- must be designed such that it works properly on different devices (desktop and mobile)
+To run this application locally, make sure you are in the project folder on your terminal then install the dependencies using 
+```powershell-interactive
+$ pip install -r requirements.txt
+```
+Run the application using
+```azurepowershell
+$ python -m flask run
+```
+Your app should be running on port 5000
 
-You must also include a README.md file that
-- explains what your app does
-- explains the tables in your schema
-- explains how to set the app up and run it locally
+<http://127.0.0.1:5000>
 
-## Optional components
+## Table Schema
 
-The following are optional, but not required:
+This App has just two models having a one-to-many relationship and make use of the sqlite database: 
+- **AppUser** :Table for saving users. One user can have 0 or many tasks
+- **Task**- Table for saving tasks of users. 
 
-- you may use an ORM library
-- you may use a CSS framework
-- you may use an API
-- you may have users and authentication
-- you may use  a library to manage authentication and authorization
-- you may deploy your application to the web
 
-## Recommendations
-
-The possibilities for your application are wide and varied. Choosing a scope for your project that you can complete within the time is key.
-
-Before you start coding, you should:
-- write out a list of pages in your planned application
-- write the routes associated with those pages and their actions
-- write out the plan for the models in your schema
-
-You are also highly encouraged to build a scoped-down **Minimum Viable Product** (MVP) first, then add more features after you have it working.
-
-## Notes
-
-- If you choose to start from a Flask or Express starter code template (like [flask-starter](https://github.com/ksh7/flask-starter) or [express-postgres-boilerplate](https://github.com/mateo-io/express-postgres-boilerplate)) you **must** mention it in your README file.
+## Credits
+- This projects makes use of OOP style heavily for the backend. The inspiration for this came from an API built in java [activity-trackerAPI](https://github.com/osamudiamenojo/activity_tracker.git) and [OOP Course Manager](https://github.com/kibo-programming-2-jan-23/oop-course-manager-osamudiamenojo.git) a programming assignment with pre-written code.
+-  The front end of this project contains some code originally generated from chats with the [Chat GPT AI tool](https://chat.openai.com/chat)
+## Hosting 
+This app is hosted on render and can be accessed from this link [here](https://activity-log.onrender.com/dashboard)
